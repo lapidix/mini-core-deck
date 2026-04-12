@@ -4,30 +4,36 @@ Mini chain core protocol research deck - build, deploy & test forked CometBFT/SD
 
 ## Overview
 
-이 레포는 fork한 CometBFT와 Cosmos SDK를 연결하여 빌드하고, K8s(kind) 기반 4노드 validator 테스트넷에 배포/테스트하기 위한 인프라 레포입니다.
+fork한 CometBFT와 Cosmos SDK를 연결하여 빌드하고, K8s(kind) 기반 4노드 validator 테스트넷에 배포/테스트하기 위한 레포입니다.
 
-### 관련 레포
+3개 fork 레포를 **git submodule**로 포함하고 있으며, `go.work`로 로컬 모듈을 연결하여 빌드합니다.
 
-| 레포 | 브랜치 | 역할 |
-|------|--------|------|
-| [lapidix/cometbft](https://github.com/lapidix/cometbft) | `research/v0.38-lapidix` | CometBFT fork (합의 로직 연구) |
-| [lapidix/cosmos-sdk](https://github.com/lapidix/cosmos-sdk) | `research/v0.50-lapidix` | Cosmos SDK fork (slashing missing count 개선) |
-| [lapidix/chain-minimal](https://github.com/lapidix/chain-minimal) | `research/v0.50-lapidix` | Mini chain 앱 코드 (slashing 모듈 wired) |
-
-## 디렉토리 구조
+## 구조
 
 ```
 mini-core-deck/
-├── Dockerfile                  # minid 바이너리 멀티스테이지 빌드
+├── cometbft/               # [submodule] CometBFT fork (research/v0.38-lapidix)
+├── cosmos-sdk/             # [submodule] Cosmos SDK fork (research/v0.50-lapidix)
+├── chain-minimal/          # [submodule] Mini chain 앱 코드 (research/v0.50-lapidix)
+├── go.work                 # Go workspace - 3개 모듈 로컬 연결
+├── Dockerfile              # minid 바이너리 멀티스테이지 빌드
 ├── k8s/
-│   ├── kind-config.yaml        # kind 클러스터 설정
-│   ├── testnet.yaml            # 4노드 Pod + Service manifests
-│   ├── setup-testnet.sh        # K8s 배포 스크립트
-│   └── teardown.sh             # K8s 정리 스크립트
+│   ├── kind-config.yaml    # kind 클러스터 설정
+│   ├── testnet.yaml        # 4노드 Pod + Service manifests
+│   ├── setup-testnet.sh    # K8s 배포 스크립트
+│   └── teardown.sh         # K8s 정리 스크립트
 ├── scripts/
-│   └── init-testnet.sh         # 4노드 테스트넷 초기화 (genesis, keys, config)
+│   └── init-testnet.sh     # 4노드 테스트넷 초기화 (genesis, keys, config)
 └── README.md
 ```
+
+### Submodules
+
+| 레포 | 브랜치 | 역할 |
+|------|--------|------|
+| [lapidix/cometbft](https://github.com/lapidix/cometbft) | `research/v0.38-lapidix` | CometBFT fork - 합의 로직 연구 (timeout_commit 등) |
+| [lapidix/cosmos-sdk](https://github.com/lapidix/cosmos-sdk) | `research/v0.50-lapidix` | Cosmos SDK fork - slashing missing count 로직 개선 |
+| [lapidix/chain-minimal](https://github.com/lapidix/chain-minimal) | `research/v0.50-lapidix` | Mini chain 앱 - auth, bank, staking, distribution, slashing 모듈 |
 
 ## Prerequisites
 
@@ -39,33 +45,26 @@ mini-core-deck/
 
 ## Quick Start
 
-### 1. 로컬 환경 구성
+### 1. Clone (submodule 포함)
 
 ```bash
-# 이 레포 clone
-git clone https://github.com/lapidix/mini-core-deck.git
+git clone --recursive https://github.com/lapidix/mini-core-deck.git
 cd mini-core-deck
+```
 
-# 3개 fork 레포 clone
-git clone https://github.com/lapidix/cometbft.git
-git clone https://github.com/lapidix/cosmos-sdk.git
-git clone https://github.com/lapidix/chain-minimal.git
+이미 clone한 경우 submodule만 가져오기:
 
-# 각 레포 연구 브랜치로 checkout
-git -C cometbft checkout research/v0.38-lapidix
-git -C cosmos-sdk checkout research/v0.50-lapidix
-git -C chain-minimal checkout research/v0.50-lapidix
-
-# go.work 생성 (로컬 개발용)
-go work init ./cometbft ./cosmos-sdk ./chain-minimal
-go work edit -replace github.com/gin-gonic/gin=github.com/gin-gonic/gin@v1.9.1
+```bash
+git submodule update --init --recursive
 ```
 
 ### 2. 빌드
 
 ```bash
 # 로컬 빌드
-cd chain-minimal && GOTOOLCHAIN=go1.23.4 go build ./cmd/minid/ && cd ..
+cd chain-minimal
+GOTOOLCHAIN=go1.23.4 go build ./cmd/minid/
+cd ..
 
 # Docker 이미지 빌드
 docker build -t minid:latest .
@@ -86,7 +85,7 @@ done
 pkill -f "minid start --home testnet"
 ```
 
-### 4. 테스트넷 실행 (K8s)
+### 4. 테스트넷 실행 (K8s / kind)
 
 ```bash
 # 테스트넷 초기화 (이미 했으면 스킵)
@@ -132,8 +131,10 @@ kubectl exec minid-node0 -c minid -- minid query staking validators --home /root
 
 ## 코드 수정 후 재배포
 
+`go.work`가 3개 submodule을 로컬 연결하고 있으므로, submodule 내 코드를 수정하면 빌드에 즉시 반영됩니다.
+
 ```bash
-# 1. cometbft 또는 cosmos-sdk 코드 수정 (go.work가 자동 참조)
+# 1. cometbft 또는 cosmos-sdk 코드 수정
 
 # 2. Docker 이미지 재빌드
 docker build -t minid:latest .
@@ -142,6 +143,20 @@ docker build -t minid:latest .
 bash k8s/teardown.sh
 bash scripts/init-testnet.sh
 bash k8s/setup-testnet.sh
+```
+
+### Submodule 변경사항 커밋
+
+```bash
+# submodule 내부에서 커밋 + push
+cd cometbft
+git add . && git commit -m "feat: ..." && git push
+cd ..
+
+# 루트에서 submodule 참조 업데이트
+git add cometbft
+git commit -m "chore: update cometbft submodule"
+git push
 ```
 
 ## License
