@@ -1,0 +1,9 @@
+go 1.23
+
+use (
+	./chain-minimal
+	./cometbft
+	./cosmos-sdk
+)
+
+replace github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
