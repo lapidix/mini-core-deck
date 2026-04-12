@@ -1,6 +1,6 @@
 ---
 # ============================================================
-# Node 0
+# Node 0 → worker (chain-node=0)
 # ============================================================
 apiVersion: v1
 kind: Pod
@@ -10,6 +10,8 @@ metadata:
     app: minid
     node: node0
 spec:
+  nodeSelector:
+    chain-node: "0"
   initContainers:
     - name: copy-config
       image: minid:latest
@@ -73,7 +75,7 @@ spec:
       targetPort: 1317
 ---
 # ============================================================
-# Node 1
+# Node 1 → worker (chain-node=1)
 # ============================================================
 apiVersion: v1
 kind: Pod
@@ -83,6 +85,8 @@ metadata:
     app: minid
     node: node1
 spec:
+  nodeSelector:
+    chain-node: "1"
   initContainers:
     - name: copy-config
       image: minid:latest
@@ -146,7 +150,7 @@ spec:
       targetPort: 1317
 ---
 # ============================================================
-# Node 2
+# Node 2 → worker (chain-node=2)
 # ============================================================
 apiVersion: v1
 kind: Pod
@@ -156,6 +160,8 @@ metadata:
     app: minid
     node: node2
 spec:
+  nodeSelector:
+    chain-node: "2"
   initContainers:
     - name: copy-config
       image: minid:latest
@@ -219,7 +225,7 @@ spec:
       targetPort: 1317
 ---
 # ============================================================
-# Node 3
+# Node 3 → worker (chain-node=3)
 # ============================================================
 apiVersion: v1
 kind: Pod
@@ -229,6 +235,8 @@ metadata:
     app: minid
     node: node3
 spec:
+  nodeSelector:
+    chain-node: "3"
   initContainers:
     - name: copy-config
       image: minid:latest
