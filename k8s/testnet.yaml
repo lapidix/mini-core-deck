@@ -1,0 +1,292 @@
+---
+# ============================================================
+# Node 0
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: minid-node0
+  labels:
+    app: minid
+    node: node0
+spec:
+  initContainers:
+    - name: copy-config
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["sh", "-c", "cp /config-readonly/* /config/ && echo '{\"height\":\"0\",\"round\":0,\"step\":0}' > /data/priv_validator_state.json"]
+      volumeMounts:
+        - name: config-readonly
+          mountPath: /config-readonly
+        - name: config
+          mountPath: /config
+        - name: data
+          mountPath: /data
+  containers:
+    - name: minid
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["minid", "start", "--home", "/root/.minid"]
+      ports:
+        - containerPort: 26656
+          name: p2p
+        - containerPort: 26657
+          name: rpc
+        - containerPort: 9090
+          name: grpc
+        - containerPort: 1317
+          name: api
+      volumeMounts:
+        - name: config
+          mountPath: /root/.minid/config
+        - name: data
+          mountPath: /root/.minid/data
+  volumes:
+    - name: config-readonly
+      configMap:
+        name: node0-config
+    - name: config
+      emptyDir: {}
+    - name: data
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minid-node0
+spec:
+  selector:
+    app: minid
+    node: node0
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+    - name: api
+      port: 1317
+      targetPort: 1317
+---
+# ============================================================
+# Node 1
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: minid-node1
+  labels:
+    app: minid
+    node: node1
+spec:
+  initContainers:
+    - name: copy-config
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["sh", "-c", "cp /config-readonly/* /config/ && echo '{\"height\":\"0\",\"round\":0,\"step\":0}' > /data/priv_validator_state.json"]
+      volumeMounts:
+        - name: config-readonly
+          mountPath: /config-readonly
+        - name: config
+          mountPath: /config
+        - name: data
+          mountPath: /data
+  containers:
+    - name: minid
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["minid", "start", "--home", "/root/.minid"]
+      ports:
+        - containerPort: 26656
+          name: p2p
+        - containerPort: 26657
+          name: rpc
+        - containerPort: 9090
+          name: grpc
+        - containerPort: 1317
+          name: api
+      volumeMounts:
+        - name: config
+          mountPath: /root/.minid/config
+        - name: data
+          mountPath: /root/.minid/data
+  volumes:
+    - name: config-readonly
+      configMap:
+        name: node1-config
+    - name: config
+      emptyDir: {}
+    - name: data
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minid-node1
+spec:
+  selector:
+    app: minid
+    node: node1
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+    - name: api
+      port: 1317
+      targetPort: 1317
+---
+# ============================================================
+# Node 2
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: minid-node2
+  labels:
+    app: minid
+    node: node2
+spec:
+  initContainers:
+    - name: copy-config
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["sh", "-c", "cp /config-readonly/* /config/ && echo '{\"height\":\"0\",\"round\":0,\"step\":0}' > /data/priv_validator_state.json"]
+      volumeMounts:
+        - name: config-readonly
+          mountPath: /config-readonly
+        - name: config
+          mountPath: /config
+        - name: data
+          mountPath: /data
+  containers:
+    - name: minid
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["minid", "start", "--home", "/root/.minid"]
+      ports:
+        - containerPort: 26656
+          name: p2p
+        - containerPort: 26657
+          name: rpc
+        - containerPort: 9090
+          name: grpc
+        - containerPort: 1317
+          name: api
+      volumeMounts:
+        - name: config
+          mountPath: /root/.minid/config
+        - name: data
+          mountPath: /root/.minid/data
+  volumes:
+    - name: config-readonly
+      configMap:
+        name: node2-config
+    - name: config
+      emptyDir: {}
+    - name: data
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minid-node2
+spec:
+  selector:
+    app: minid
+    node: node2
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+    - name: api
+      port: 1317
+      targetPort: 1317
+---
+# ============================================================
+# Node 3
+# ============================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: minid-node3
+  labels:
+    app: minid
+    node: node3
+spec:
+  initContainers:
+    - name: copy-config
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["sh", "-c", "cp /config-readonly/* /config/ && echo '{\"height\":\"0\",\"round\":0,\"step\":0}' > /data/priv_validator_state.json"]
+      volumeMounts:
+        - name: config-readonly
+          mountPath: /config-readonly
+        - name: config
+          mountPath: /config
+        - name: data
+          mountPath: /data
+  containers:
+    - name: minid
+      image: minid:latest
+      imagePullPolicy: Never
+      command: ["minid", "start", "--home", "/root/.minid"]
+      ports:
+        - containerPort: 26656
+          name: p2p
+        - containerPort: 26657
+          name: rpc
+        - containerPort: 9090
+          name: grpc
+        - containerPort: 1317
+          name: api
+      volumeMounts:
+        - name: config
+          mountPath: /root/.minid/config
+        - name: data
+          mountPath: /root/.minid/data
+  volumes:
+    - name: config-readonly
+      configMap:
+        name: node3-config
+    - name: config
+      emptyDir: {}
+    - name: data
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minid-node3
+spec:
+  selector:
+    app: minid
+    node: node3
+  ports:
+    - name: p2p
+      port: 26656
+      targetPort: 26656
+    - name: rpc
+      port: 26657
+      targetPort: 26657
+    - name: grpc
+      port: 9090
+      targetPort: 9090
+    - name: api
+      port: 1317
+      targetPort: 1317
