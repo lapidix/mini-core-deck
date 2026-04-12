@@ -1,0 +1,64 @@
+services:
+  node0:
+    image: minid:latest
+    container_name: minid-node0
+    command: ["start", "--home", "/root/.minid"]
+    volumes:
+      - ./testnet/docker/node0/config:/root/.minid/config
+      - ./testnet/docker/node0/data:/root/.minid/data
+    ports:
+      - "26656:26656"
+      - "26657:26657"
+      - "9090:9090"
+      - "1317:1317"
+    networks:
+      - testnet
+
+  node1:
+    image: minid:latest
+    container_name: minid-node1
+    command: ["start", "--home", "/root/.minid"]
+    volumes:
+      - ./testnet/docker/node1/config:/root/.minid/config
+      - ./testnet/docker/node1/data:/root/.minid/data
+    ports:
+      - "26756:26656"
+      - "26757:26657"
+      - "9190:9090"
+      - "1417:1317"
+    networks:
+      - testnet
+
+  node2:
+    image: minid:latest
+    container_name: minid-node2
+    command: ["start", "--home", "/root/.minid"]
+    volumes:
+      - ./testnet/docker/node2/config:/root/.minid/config
+      - ./testnet/docker/node2/data:/root/.minid/data
+    ports:
+      - "26856:26656"
+      - "26857:26657"
+      - "9290:9090"
+      - "1517:1317"
+    networks:
+      - testnet
+
+  node3:
+    image: minid:latest
+    container_name: minid-node3
+    command: ["start", "--home", "/root/.minid"]
+    volumes:
+      - ./testnet/docker/node3/config:/root/.minid/config
+      - ./testnet/docker/node3/data:/root/.minid/data
+    ports:
+      - "26956:26656"
+      - "26957:26657"
+      - "9390:9090"
+      - "1617:1317"
+    networks:
+      - testnet
+
+networks:
+  testnet:
+    driver: bridge
