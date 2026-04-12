@@ -1,0 +1,12 @@
+[submodule "chain-minimal"]
+	path = chain-minimal
+	url = https://github.com/lapidix/chain-minimal.git
+	branch = research/v0.50-lapidix
+[submodule "cometbft"]
+	path = cometbft
+	url = https://github.com/lapidix/cometbft.git
+	branch = research/v0.38-lapidix
+[submodule "cosmos-sdk"]
+	path = cosmos-sdk
+	url = https://github.com/lapidix/cosmos-sdk.git
+	branch = research/v0.50-lapidix
