@@ -1,4 +1,4 @@
-.PHONY: build docker-build init deploy teardown redeploy status logs signing-info validators height help
+.PHONY: build docker-build init deploy teardown redeploy status logs signing-info validators height help port-forward port-forward-rpc port-forward-grpc stop-node start-node
 
 BINARY = ./chain-minimal/minid
 DOCKER_IMAGE = minid:latest
@@ -60,6 +60,21 @@ validators: ## Show validator status (jailed, bonded)
 	@kubectl exec minid-node0 -c minid -- \
 		minid query staking validators --home /root/.minid --output json 2>/dev/null \
 		| jq '.validators[] | {moniker, jailed, status}'
+
+# ============================================================
+# Port Forwarding
+# ============================================================
+
+port-forward: ## Forward RPC(26657) + gRPC(9090) of node0 (use NODE=1 for other nodes)
+	@echo "Forwarding minid-node$(or $(NODE),0) → localhost:26657 (RPC) + localhost:9090 (gRPC)"
+	@echo "Press Ctrl+C to stop"
+	kubectl port-forward pod/minid-node$(or $(NODE),0) 26657:26657 9090:9090
+
+port-forward-rpc: ## Forward RPC only (use NODE=1 for other nodes)
+	kubectl port-forward pod/minid-node$(or $(NODE),0) 26657:26657
+
+port-forward-grpc: ## Forward gRPC only (use NODE=1 for other nodes)
+	kubectl port-forward pod/minid-node$(or $(NODE),0) 9090:9090
 
 # ============================================================
 # Node Control
