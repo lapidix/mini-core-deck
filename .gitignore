@@ -7,5 +7,8 @@ go.work.sum
 # Docker
 *.tar
 
+# Docs (local only, not tracked in git)
+docs/
+
 # OS
 .DS_Store
