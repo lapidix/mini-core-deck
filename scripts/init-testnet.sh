@@ -157,8 +157,8 @@ for i in $(seq 0 $((NUM_NODES - 1))); do
     # Persistent peers
     sed -i'' -e "s|persistent_peers = \"\"|persistent_peers = \"${PEERS}\"|g" "${CONFIG_FILE}"
 
-    # Fast block time: timeout_commit = 500ms
-    sed -i'' -e 's|timeout_commit = "5s"|timeout_commit = "500ms"|g' "${CONFIG_FILE}"
+    # Zero timeout_commit for delayed_commits testing
+    sed -i'' -e 's|timeout_commit = "5s"|timeout_commit = "0s"|g' "${CONFIG_FILE}"
 
     # Allow duplicate IPs (needed for localhost multi-node)
     sed -i'' -e 's|allow_duplicate_ip = false|allow_duplicate_ip = true|g' "${CONFIG_FILE}"
