@@ -1,5 +1,13 @@
 # Delayed Commits: 합의 속도와 밸리데이터 보호의 균형
 
+> 이 문서는 프로젝트 전체 개요입니다. 각 레포별 상세 변경 사항은 아래를 참고하세요.
+>
+> | 레포 | 문서 | 내용 |
+> |------|------|------|
+> | [lapidix/cometbft](https://github.com/lapidix/cometbft/tree/research/v0.38-lapidix) | [`docs/delayed-commits.md`](https://github.com/lapidix/cometbft/blob/research/v0.38-lapidix/docs/delayed-commits.md) | ABCI proto 확장, DelayedPrecommits 버퍼, 블록 실행 |
+> | [lapidix/cosmos-sdk](https://github.com/lapidix/cosmos-sdk/tree/research/v0.50-lapidix) | [`docs/delayed-commits-slashing.md`](https://github.com/lapidix/cosmos-sdk/blob/research/v0.50-lapidix/docs/delayed-commits-slashing.md) | Context 확장, PendingMissedBlocks, Deferred Evaluation |
+> | [lapidix/mini-core-deck](https://github.com/lapidix/mini-core-deck) | 이 문서 | 전체 설계, 버그 분석, 벤치마크, 아키텍처 |
+
 ## 1. 배경
 
 CometBFT의 `timeout_commit`은 2/3 이상의 Precommit이 모인 후에도 추가로 대기하는 시간이다. 이 대기를 통해 늦게 도착하는 투표를 수집하여 밸리데이터의 Missing Count 증가를 방지한다. 하지만 블록 생성 속도를 직접적으로 제한하는 원인이기도 하다.
