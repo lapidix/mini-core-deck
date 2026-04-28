@@ -159,7 +159,7 @@ for i in $(seq 0 $((NUM_NODES - 1))); do
 
     # Set timeout_commit for delayed_commits testing
     # Set timeout_commit for delayed_commits testing
-    sed -i'' -e 's|timeout_commit = "1ms"]*"|timeout_commit = "1ms"|g' "${CONFIG_FILE}"
+    sed -i'' -e 's|timeout_commit = "10ms"]*"|timeout_commit = "10ms"|g' "${CONFIG_FILE}"
 
     # Allow duplicate IPs (needed for localhost multi-node)
     sed -i'' -e 's|allow_duplicate_ip = false|allow_duplicate_ip = true|g' "${CONFIG_FILE}"
